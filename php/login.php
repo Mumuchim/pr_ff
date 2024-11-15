@@ -40,7 +40,7 @@ if(isset($_POST['email']) &&
                  $_SESSION['fname'] = $fname;
                  $_SESSION['pp'] = $pp;
 
-                 header("Location: ../bb.php");
+                 header("Location: ../d2ka.php");
                  exit;
              }else {
                $em = "Incorrect email or password";

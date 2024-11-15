@@ -262,8 +262,7 @@
     <button class="open-button" onclick="openForm()">new report</button>
     <div class="form-popup" id="myForm">
     	
-    <form class="form-container" action="php/rep.php" method="post" enctype="multipart/form-data">
-            
+   <form id="reportForm" class="form-container" action="php/awts.php" method="post" enctype="multipart/form-data">
             <div class="report">
     		<h1 class="display-4  fs-1">Report</h1><br>
             <label><p>Report here your concern.<p></label>
@@ -317,12 +316,14 @@
                         <label for="reportDate" class="date-label">Report Date:</label>
                         <input type="date"  name="date" class="date-picker">
                     </div>
-		  <button type="submit" class="btn btn-primary">Submit</button>
-          <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+		  <button type="submit" class="btn btn-primary" id="submitButton" >Submit</button>
+          <button type="button" class="btn cancel" id="cancelRequestButton">Cancel Request</button>
+
 		</form>
     </div>
     <script src="js/loadSidebar.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/submit.js"></script>
 
 </body>
 

@@ -1,5 +1,8 @@
 document.getElementById('secondFloor').style.display = 'none';
 
+let lastClonedPin = null; // Track the most recently cloned pin
+let pinPlacedManually = false; // Flag to track if a pin was placed manually
+
 function showFloor(floor) {
     const firstFloor = document.getElementById('firstFloor');
     const secondFloor = document.getElementById('secondFloor');
@@ -49,25 +52,47 @@ document.getElementById("closeButton").addEventListener("click", function () {
 let pinPositions = [];
 
 function savePinPositions() {
-    localStorage.setItem("pinPositions", JSON.stringify(pinPositions));
+    try {
+        const positionsWithImages = pinPositions.map(position => {
+            const pinElement = document.getElementById(position.pinId);
+            const img = pinElement.querySelector('img');
+            return {
+                ...position,
+                imgSrc: img ? img.src : null
+            };
+        });
+        localStorage.setItem("pinPositions", JSON.stringify(positionsWithImages));
+    } catch (e) {
+        console.error("Error saving pin positions to localStorage", e);
+    }
 }
 
 function loadPinPositions() {
-    const savedPositions = JSON.parse(localStorage.getItem("pinPositions"));
-    if (savedPositions) {
-        savedPositions.forEach(position => {
-            const pinElement = document.createElement('div');
-            pinElement.classList.add('pin');
-            pinElement.style.position = 'absolute';
-            pinElement.style.top = position.top;
-            pinElement.style.left = position.left;
-            pinElement.id = position.pinId;
-            document.getElementById("mapContainer").appendChild(pinElement);
+    try {
+        const savedPositions = JSON.parse(localStorage.getItem("pinPositions"));
+        if (savedPositions) {
+            savedPositions.forEach(position => {
+                const pinElement = document.createElement('div');
+                pinElement.classList.add('pin');
+                pinElement.style.position = 'absolute';
+                pinElement.style.top = position.top;
+                pinElement.style.left = position.left;
+                pinElement.id = position.pinId;
+                document.getElementById("mapContainer").appendChild(pinElement);
 
-            pinElement.addEventListener('click', () => {
-                showCustomModal(position.pinId);
+                const img = document.createElement('img');
+                img.src = position.imgSrc;
+                pinElement.appendChild(img);
+
+                pinElement.addEventListener('click', () => {
+                    showPinOptions(pinElement, position.pinId);
+                });
+
+                pinPositions.push(position);
             });
-        });
+        }
+    } catch (e) {
+        console.error("Error loading pin positions from localStorage", e);
     }
 }
 
@@ -89,25 +114,35 @@ document.addEventListener('DOMContentLoaded', function () {
         function onMouseUp() {
             isDragging = false;
 
-            const pinId = pin.id;
-            pinPositions = pinPositions.filter(p => p.pinId !== pinId);
-            pinPositions.push({
-                pinId: pinId,
-                top: pin.style.top,
-                left: pin.style.left
-            });
-            savePinPositions();
+            const confirmPosition = confirm('Do you want to confirm the pin\'s position?');
+            if (confirmPosition) {
+                pin.style.position = 'absolute';
+                const pinId = pin.id;
+                pinPositions = pinPositions.filter(p => p.pinId !== pinId);
+                pinPositions.push({
+                    pinId: pinId,
+                    top: pin.style.top,
+                    left: pin.style.left
+                });
+                savePinPositions();
 
-            pin.style.position = "absolute";
-            showCustomModal(pinId);
+                pin.removeEventListener('mousedown', onMouseDown);
+                pin.removeEventListener('mousemove', onMouseMove);
+                pin.removeEventListener('mouseup', onMouseUp);
 
-            pin.removeEventListener('mousedown', onMouseDown);
-            pin.removeEventListener('mousemove', onMouseMove);
-            pin.removeEventListener('mouseup', onMouseUp);
+                pin.addEventListener('click', () => {
+                    // Only show the modal if the pin wasn't placed manually
+                    if (!pinPlacedManually) {
+                        showPinOptions(pin, pinId);
+                    }
+                });
 
-            pin.addEventListener('click', () => {
-                showCustomModal(pinId);
-            });
+                // Automatically show the report form after confirmation
+                openForm();
+                pinPlacedManually = true;  // Set the flag to true after pin placement
+            } else {
+                makeDraggable(pin);
+            }
 
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
@@ -134,12 +169,27 @@ document.addEventListener('DOMContentLoaded', function () {
         clone.style.top = `${y}px`;
         mapContainer.appendChild(clone);
 
-        makeDraggable(clone);
-        pinPositions.push({ pinId: pinId, top: clone.style.top, left: clone.style.left });
+        const img = clone.querySelector('img');
+        const imgSrc = img ? img.src : null;
+
+        pinPositions.push({
+            pinId: pinId,
+            top: clone.style.top,
+            left: clone.style.left,
+            imgSrc: imgSrc
+        });
+
         savePinPositions();
 
+        // Track the most recently cloned pin
+        lastClonedPin = clone;
+
+        makeDraggable(clone);
         clone.addEventListener('click', () => {
-            showCustomModal(pinId);
+            // Only show the modal if the pin wasn't placed manually
+            if (!pinPlacedManually) {
+                showPinOptions(clone, pinId);
+            }
         });
     }
 
@@ -158,51 +208,61 @@ document.addEventListener('DOMContentLoaded', function () {
     enablePinPlacement(itIcon);
     enablePinPlacement(repairIcon);
     enablePinPlacement(requestIcon);
-
-    function showCustomModal(pinId) {
-        const modal = document.createElement('div');
-        modal.classList.add('custom-modal');
-
-        const reportsButton = document.createElement('button');
-        reportsButton.textContent = 'Reports';
-        const statusButton = document.createElement('button');
-        statusButton.textContent = 'Status';
-        const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove Pin';
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancel';
-
-        modal.appendChild(reportsButton);
-        modal.appendChild(statusButton);
-        modal.appendChild(removeButton);
-        modal.appendChild(cancelButton);
-
-        document.body.appendChild(modal);
-
-        reportsButton.addEventListener('click', () => {
-            openForm(); // Open the report popup
-        });
-
-        statusButton.addEventListener('click', () => {
-            window.location.href = '/pages/status.html';
-            document.body.removeChild(modal);
-        });
-
-        removeButton.addEventListener('click', () => {
-            const pinElement = document.getElementById(pinId);
-            if (pinElement) {
-                mapContainer.removeChild(pinElement);
-                pinPositions = pinPositions.filter(p => p.pinId !== pinId);
-                savePinPositions();
-            }
-            document.body.removeChild(modal);
-        });
-
-        cancelButton.addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
-    }
 });
+
+// Show modal with pin options
+function showPinOptions(pinElement, pinId) {
+    // Check if a modal already exists to prevent multiple modals
+    if (document.querySelector('.custom-modal')) {
+        return;
+    }
+
+    const modal = document.createElement('div');
+    modal.classList.add('custom-modal');
+    modal.style.position = 'absolute';
+    modal.style.top = `${pinElement.getBoundingClientRect().top - 100}px`;
+    modal.style.left = `${pinElement.getBoundingClientRect().left}px`;
+    modal.style.width = '200px';
+    modal.style.height = '140px';
+    modal.style.backgroundColor = '#042331';
+    modal.style.border = '1px solid #ccc';
+    modal.style.borderRadius = '8px';
+    modal.style.padding = '10px';
+    modal.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+
+    const statusButton = document.createElement('button');
+    statusButton.textContent = 'Status';
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove Pin';
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Close';
+
+    modal.appendChild(statusButton);
+    modal.appendChild(removeButton);
+    modal.appendChild(closeButton);
+
+    document.body.appendChild(modal);
+
+    statusButton.addEventListener('click', () => {
+        window.location.href = '/pages/status.html';
+        document.body.removeChild(modal);
+    });
+
+    removeButton.addEventListener('click', () => {
+        if (confirm('Are you sure you want to remove this pin?')) {
+            const mapContainer = document.getElementById('mapContainer');
+            mapContainer.removeChild(pinElement);
+
+            pinPositions = pinPositions.filter(p => p.pinId !== pinId);
+            savePinPositions();
+        }
+        document.body.removeChild(modal);
+    });
+
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+}
 
 // Load saved pins from localStorage when the page loads
 window.onload = function() {
@@ -212,77 +272,22 @@ window.onload = function() {
 function openForm() {
     document.getElementById("myForm").style.display = "block";
 }
-  
+
 function closeForm() {
     document.getElementById("myForm").style.display = "none";
+
+    // Remove the most recent cloned pin if it exists
+    if (lastClonedPin) {
+        const mapContainer = document.getElementById('mapContainer');
+        mapContainer.removeChild(lastClonedPin);
+        
+        // Remove the pin data from pinPositions
+        pinPositions = pinPositions.filter(p => p.pinId !== lastClonedPin.id);
+        savePinPositions();
+
+        // Reset the lastClonedPin reference
+        lastClonedPin = null;
+    }
 }
 
-function handleSubmit(event) {
-    event.preventDefault(); // Prevent actual form submission
-
-    // Perform the AJAX submission if necessary (or remove this if form is handled server-side)
-    alert("Report submitted"); // Display pop-up message
-    closeForm(); // Close the form
-    return false; // Return false to prevent actual form submission
-}
-
-// Function to show success pop-up in the center of the page
-// function showSuccessPopup(message) {
-//     const popup = document.createElement("div");
-//     popup.classList.add("success-popup");
-//     popup.textContent = message;
-
-//     document.body.appendChild(popup);
-
-//     // Center the pop-up on the page
-//     popup.style.top = `${window.scrollY + window.innerHeight / 2 - popup.offsetHeight / 2}px`;
-//     popup.style.left = `${window.scrollX + window.innerWidth / 2 - popup.offsetWidth / 2}px`;
-
-//     // Automatically remove the pop-up after 3 seconds
-//     setTimeout(() => {
-//         popup.remove();
-//     }, 3000);
-// }
-
-
-// Function to handle form submission and close the form
-// document.querySelector(".form-container").onsubmit = function(e) {
-//     e.preventDefault(); // Prevent the form from submitting normally
-
-//     const formData = new FormData(this); // Collect form data
-
-//     // Send data using AJAX
-//     fetch("php/rep.php", {
-//         method: "POST",
-//         body: formData,
-//     })
-//     .then(response => response.text())
-//     .then(data => {
-//         if (data.includes('Report submitted successfully!')) {
-//             showSuccessPopup("Submitted successfully!");
-//             // Close the form pop-up after a short delay
-//             setTimeout(() => {
-//                 document.getElementById("myForm").style.display = "none";
-//             }, 1000); // Delay for 1 second before closing
-//         } else {
-//             console.error("Error:", data);
-//             alert("Error: " + data); // Display error in an alert
-//         }
-//     })
-//     .catch(error => console.error("Error:", error));
-// };
-
-// Function to show success popup
-// function showSuccessPopup(message) {
-//     alert(message); // Replace with a custom popup if needed
-// }
-
-// Function to open the form
-function openForm() {
-    document.getElementById("myForm").style.display = "block";
-}
-
-// Function to close the form
-function closeForm() {
-    document.getElementById("myForm").style.display = "none";
-}
+document.getElementById("cancelRequestButton").addEventListener('click', closeForm);

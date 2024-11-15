@@ -55,16 +55,16 @@ if (isset($_POST['title']) &&
                     $stmt = $conn->prepare($sql);
                     $stmt->execute([$title, $details, $type, $new_img_name, $date]);
 
-                    header("Location: ../index.php?success=Report submitted successfully");
+                    header("Location: ../d2ka.php?success=Report submitted successfully");
                     exit;
                 } else {
                     $em = "You can't upload files of this type";
-                    header("Location: ../index.php?error=$em&$data");
+                    header("Location: ../d2ka.php?error=$em&$data");
                     exit;
                 }
             } else {
                 $em = "Unknown error occurred!";
-                header("Location: ../index.php?error=$em&$data");
+                header("Location: ../d2ka.php?error=$em&$data");
                 exit;
             }
         } else {

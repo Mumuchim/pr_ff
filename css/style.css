@@ -115,25 +115,28 @@
   }
   
   /* Sidebar for admin style */
-  .sidebar {
+/* Sidebar styling */
+.sidebar {
 	position: fixed;
-	left: -250px;
+	left: -250px; /* Hidden off-screen initially */
 	width: 250px;
 	height: 100%;
 	background: #042331;
-	transition: all 0.5s ease;
-  }
-  
-  .sidebar header {
+	transition: all 0.5s ease; /* Smooth slide-in */
+}
+
+/* Sidebar header styling */
+.sidebar header {
 	font-size: 22px;
 	color: white;
 	line-height: 70px;
 	text-align: center;
 	background: #063146;
 	user-select: none;
-  }
-  
-  .sidebar ul a {
+}
+
+/* Sidebar menu item styling */
+.sidebar ul a {
 	display: block;
 	height: 100%;
 	width: 100%;
@@ -146,37 +149,43 @@
 	border-bottom: 1px solid black;
 	border-top: 1px solid rgba(255, 255, 255, 0.1);
 	transition: 0.4s;
-  }
-  
-  ul li:hover a {
+}
+
+/* Hover effect for sidebar items */
+ul li:hover a {
 	padding-left: 50px;
-  }
-  
-  .sidebar ul a i {
+}
+
+/* Icon spacing */
+.sidebar ul a i {
 	margin-right: 16px;
-  }
-  
-  #check {
+}
+
+/* Checkbox for toggling sidebar */
+#check {
 	display: none;
-  }
-  
-  label #btn, label #cancel {
+}
+
+/* Menu and close buttons styling */
+label #btn, label #cancel {
 	position: absolute;
 	background: #042331;
 	border-radius: 3px;
 	cursor: pointer;
-  }
-  
-  label #btn {
+}
+
+/* Menu button styling */
+label #btn {
 	left: 40px;
 	top: 25px;
 	font-size: 35px;
 	color: white;
 	padding: 6px 12px;
 	transition: all 0.5s;
-  }
-  
-  label #cancel {
+}
+
+/* Close button styling */
+label #cancel {
 	z-index: 1111;
 	left: -195px;
 	top: 17px;
@@ -184,25 +193,30 @@
 	color: #f6f7f8;
 	padding: 4px 9px;
 	transition: all 0.5s ease;
-  }
-  
-  #check:checked ~ .sidebar {
+}
+
+/* Show sidebar when checkbox is checked */
+#check:checked ~ .sidebar {
 	left: 0;
-  }
-  
-  #check:checked ~ label #btn {
+}
+
+/* Move menu button when sidebar is open */
+#check:checked ~ label #btn {
 	left: 250px;
 	opacity: 0;
 	pointer-events: none;
-  }
-  
-  #check:checked ~ label #cancel {
+}
+
+/* Show close button when sidebar is open */
+#check:checked ~ label #cancel {
 	left: 195px;
-  }
-  
-  #check:checked ~ section {
+}
+
+/* Shift main content when sidebar is open */
+#check:checked ~ section {
 	margin-left: 250px;
-  }
+}
+
   
   /* Custom modal styles */
   
