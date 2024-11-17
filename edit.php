@@ -79,7 +79,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['fname'])) {
             </div>
 
             <button type="submit" class="btn btn-primary">Update</button>
-            <a href="d2ka.php" class="link-secondary">Home</a>
+            <a href="map.php" class="link-secondary">Home</a>
         </form>
     </div>
 

@@ -15,7 +15,7 @@
     	      method="post"
     	      enctype="multipart/form-data">
 
-    		<h4 class="display-4  fs-1">Create Account</h4><br>
+    		<h4 class="display-4 fs-1">Create Account</h4><br>
     		<?php if(isset($_GET['error'])){ ?>
     		<div class="alert alert-danger" role="alert">
 			  <?php echo $_GET['error']; ?>
@@ -27,20 +27,23 @@
 			  <?php echo $_GET['success']; ?>
 			</div>
 		    <?php } ?>
-		  <div class="mb-3">
-		    <label class="form-label">First Name</label>
-		    <input type="text" 
-		           class="form-control"
-		           name="fname"
-		           value="<?php echo (isset($_GET['fname']))?$_GET['fname']:"" ?>">
-		  </div>
-
-		  <div class="mb-3">
-		    <label class="form-label">Last Name</label>
-		    <input type="text" 
-		           class="form-control"
-		           name="lname"
-		           value="<?php echo (isset($_GET['lname']))?$_GET['lname']:"" ?>">
+		  
+		  <!-- First Name and Last Name in the same row -->
+		  <div class="row mb-3">
+		    <div class="col-md-6">
+		      <label class="form-label">First Name</label>
+		      <input type="text" 
+		             class="form-control"
+		             name="fname"
+		             value="<?php echo (isset($_GET['fname']))?$_GET['fname']:"" ?>">
+		    </div>
+		    <div class="col-md-6">
+		      <label class="form-label">Last Name</label>
+		      <input type="text" 
+		             class="form-control"
+		             name="lname"
+		             value="<?php echo (isset($_GET['lname']))?$_GET['lname']:"" ?>">
+		    </div>
 		  </div>
 
 		  <div class="mb-3">
@@ -58,12 +61,15 @@
 		           name="pass" required>
 		  </div>
 
-		  <!-- <div class="mb-3">
-		    <label class="form-label">Profile Picture</label>
-		    <input type="file" 
-		           class="form-control"
-		           name="pp">
-		  </div> -->
+		  <!-- Role Selection -->
+		  <div class="mb-3">
+		    <label class="form-label">Role</label>
+		    <select class="form-control" name="role" required>
+		      <option value="" disabled selected>Select a role</option>
+		      <option value="student">Student</option>
+		      <option value="admin">Admin</option>
+		    </select>
+		  </div>
 		  
 		  <button type="submit" class="btn btn-primary">Sign Up</button>
 		  <a href="login.php" class="link-secondary">Login</a>

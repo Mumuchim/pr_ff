@@ -11,7 +11,7 @@ function loadSidebar() {
     console.log("Fetching sidebar...");
     
     // Fetch the sidebar HTML template
-    fetch('sidebar.php')
+    fetch('stud_sidebar.php')
         .then(response => {
             console.log("Sidebar fetch response:", response);
             // Check if the request was successful
