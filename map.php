@@ -257,23 +257,44 @@
     </div>
 
     <body class="report_details">
-        <button class="open-button" onclick="openForm()">new report</button>
-        <div class="form-popup" id="myForm">
-            <form action="/php/rep.php" method="POST" enctype="multipart/form-data" class="form-container">
-                <div class="report">
-                    <h1>Report</h1>
-    
-                    
-                    <label><p>Report here your concern.<p></label>
-                    <div class="report-title">
-                        <p>Title:</p>
-                        <input type="text" name ="title" placeholder="Enter a title here">
-                    </div>
-                    <textarea rows="10" cols="40" name="details" placeholder="Write your details here.."></textarea>
-    
-                    <div class="report-type">
-                        <label for="reportType">Report Type:</label>
-                        <select id="reportType" name="reportType">
+    <!-- <div class="d-flex justify-content-center align-items-center vh-100"> -->
+    <button class="open-button" onclick="openForm()">new report</button>
+    <div class="form-popup" id="myForm">
+    	
+   <form id="reportForm" class="form-container" action="php/awts.php" method="post" enctype="multipart/form-data">
+            <div class="report">
+    		<h1 class="display-4  fs-1">Report</h1><br>
+            <label><p>Report here your concern.<p></label>
+    		<?php if(isset($_GET['error'])){ ?>
+    		<div class="alert alert-danger" role="alert">
+			  <?php echo $_GET['error']; ?>
+			</div>
+		    <?php } ?>
+
+		    <?php if(isset($_GET['success'])){ ?>
+    		<div class="alert alert-success" role="alert">
+			  <?php echo $_GET['success']; ?>
+			</div>
+		    <?php } ?>
+
+
+		  <div class="report-title">
+		    <label class="form-label">Title</label>
+		    <input type="text" class="form-control" name="title"
+		           value="<?php echo (isset($_GET['title']))?$_GET['title']:"" ?>">
+		  </div>
+
+		  <!-- <div class="mb-3"> -->
+    <!-- <label class="form-label">Details</label> -->
+    <textarea rows="10" class="form-control" cols="40" name="details" placeholder="Write your details here..">
+        <?php echo isset($_GET['details']) ? $_GET['details'] : ""; ?>
+    </textarea>
+<!-- </div> -->
+
+
+		  <div class="report-type">
+		    <label class="form-label">Type of Report</label>
+		    <select id="reportType" name="type" class="form-control">
                             <option value="">Select Report Type</option>
                             <option value="caution">Caution</option>
                             <option value="cleaning">Cleaning</option>
@@ -282,22 +303,23 @@
                             <option value="repair">Repair</option>
                             <option value="request">Request</option>
                         </select>
-                    </div>
-                    
-                    <div class="file-upload">
-                    <label class="form-label">Profile Picture</label>
-                    <input type="file" class="form-control" name="repimg">
-                    </div>
-                    <div class="date-picker-section">
+		  </div>
+
+		  <div class="mb-3">
+		    <label class="form-label">Upload a file:</label>
+		    <input type="file" 
+		           class="form-control"
+		           name="image">
+		  </div>
+		  <div class="date-picker-section">
                         <label for="reportDate" class="date-label">Report Date:</label>
-                        <input type="date" id="reportDate" name="reportDate" class="date-picker">
+                        <input type="date"  name="date" class="date-picker">
                     </div>
-                </div>
-                    <button type="submit" class="btn">Submit</button>
-                    <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-                </div>
-            </form>
-        </div>
+		  <button type="submit" class="btn btn-primary" id="submitButton" >Submit</button>
+          <button type="button" class="btn cancel" id="cancelRequestButton">Cancel Request</button>
+
+		</form>
+    </div>
     
     <script src="js/loadSidebar.js"></script>
     <script src="js/app.js"></script>

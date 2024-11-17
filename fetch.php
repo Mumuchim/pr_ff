@@ -24,8 +24,11 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
-                                    <th>Class</th>
-                                    <th>Phone No</th>
+                                    <th>Report Title</th>
+                                    <th>Report Details</th>
+                                    <th>Report Type</th>
+                                    <th>Report Image</th>
+                                    <th>Report Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,13 +44,14 @@
                                         {
                                             ?>
                                             <tr>
+                                                
                                                 <td><?= $row['id']; ?></td>
+                                                <td><?= $row['user']; ?></td>
                                                 <td><?= $row['title']; ?></td>
                                                 <td><?= $row['details']; ?></td>
                                                 <td><?= $row['type']; ?></td>
                                                 <td><img width="50" height="50" src="upload/<?= $row['image']; ?>"></td>
-                                                <td><?= $row['date']; ?></td>
-
+                                                <td><?= $row['date']; ?></td>                                          
                                             </tr>
                                             <?php
                                         }

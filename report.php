@@ -11,7 +11,7 @@
     <div class="d-flex justify-content-center align-items-center vh-100">
     	
     	<form class="shadow w-450 p-3" 
-    	      action="php/rep.php" 
+    	      action="php/awts.php" 
     	      method="post"
     	      enctype="multipart/form-data">
 
@@ -27,6 +27,16 @@
 			  <?php echo $_GET['success']; ?>
 			</div>
 		    <?php } ?>
+
+			<div class="mb-3">
+		    <label class="form-label">Name:</label>
+		    <input type="text" 
+		           class="form-control"
+		           name="user"
+		           value="<?php echo (isset($_GET['user']))?$_GET['user']:"" ?>">
+		  </div>
+
+
 		  <div class="mb-3">
 		    <label class="form-label">Title</label>
 		    <input type="text" 
@@ -35,12 +45,12 @@
 		           value="<?php echo (isset($_GET['title']))?$_GET['title']:"" ?>">
 		  </div>
 
-		  <!-- <div class="mb-3"> -->
-    <!-- <label class="form-label">Details</label> -->
-    <textarea rows="10" class="form-control" cols="40" name="details" placeholder="Write your details here..">
+		  <div class="mb-3"> 
+     <label class="form-label">Details</label>
+    <textarea rows="5" class="form-control" cols="30" name="details" placeholder="Write your details here..">
         <?php echo isset($_GET['details']) ? $_GET['details'] : ""; ?>
     </textarea>
-<!-- </div> -->
+</div>
 
 
 		  <div class="mb-3">
@@ -65,7 +75,10 @@
 		  <div class="mb-3">
                         <label for="reportDate" class="date-label">Report Date:</label>
                         <input type="date"  name="date" class="date-picker">
-                    </div>
+        </div>
+
+
+		
 		  <button type="submit" class="btn btn-primary">Submit</button>
 		  <button type="submit" class="btn btn-primary">Close</button>
 		</form>

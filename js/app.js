@@ -131,15 +131,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 pin.removeEventListener('mouseup', onMouseUp);
 
                 pin.addEventListener('click', () => {
-                    // Only show the modal if the pin wasn't placed manually
                     if (!pinPlacedManually) {
                         showPinOptions(pin, pinId);
                     }
                 });
 
-                // Automatically show the report form after confirmation
                 openForm();
-                pinPlacedManually = true;  // Set the flag to true after pin placement
+                pinPlacedManually = true;
             } else {
                 makeDraggable(pin);
             }
@@ -181,12 +179,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         savePinPositions();
 
-        // Track the most recently cloned pin
         lastClonedPin = clone;
 
         makeDraggable(clone);
         clone.addEventListener('click', () => {
-            // Only show the modal if the pin wasn't placed manually
             if (!pinPlacedManually) {
                 showPinOptions(clone, pinId);
             }
@@ -212,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Show modal with pin options
 function showPinOptions(pinElement, pinId) {
-    // Check if a modal already exists to prevent multiple modals
     if (document.querySelector('.custom-modal')) {
         return;
     }
@@ -220,15 +215,30 @@ function showPinOptions(pinElement, pinId) {
     const modal = document.createElement('div');
     modal.classList.add('custom-modal');
     modal.style.position = 'absolute';
-    modal.style.top = `${pinElement.getBoundingClientRect().top - 100}px`;
-    modal.style.left = `${pinElement.getBoundingClientRect().left}px`;
     modal.style.width = '200px';
-    modal.style.height = '140px';
+    modal.style.height = '140px'; // Default height
     modal.style.backgroundColor = '#042331';
     modal.style.border = '1px solid #ccc';
     modal.style.borderRadius = '8px';
     modal.style.padding = '10px';
     modal.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+
+    const heightLimit = 30;
+    const pinRect = pinElement.getBoundingClientRect();
+    const modalTop = pinRect.top - 100;
+    const modalLeft = pinRect.left;
+    const viewportHeight = window.innerHeight;
+
+    if (modalTop < heightLimit) {
+        // Position below the pin
+        const availableSpaceBelow = viewportHeight - pinRect.bottom - 10; // Space below the pin
+        modal.style.top = `${pinRect.bottom + 100   }px`;
+        modal.style.height = `${Math.min(140, availableSpaceBelow)}px`; // Adjust modal height to fit the space below
+    } else {
+        // Position above the pin
+        modal.style.top = `${modalTop}px`;
+    }
+    modal.style.left = `${modalLeft}px`;
 
     const statusButton = document.createElement('button');
     statusButton.textContent = 'Status';
@@ -264,7 +274,7 @@ function showPinOptions(pinElement, pinId) {
     });
 }
 
-// Load saved pins from localStorage when the page loads
+
 window.onload = function() {
     loadPinPositions();
 };
@@ -276,16 +286,9 @@ function openForm() {
 function closeForm() {
     document.getElementById("myForm").style.display = "none";
 
-    // Remove the most recent cloned pin if it exists
     if (lastClonedPin) {
-        const mapContainer = document.getElementById('mapContainer');
+        const mapContainer = document.getElementById("mapContainer");
         mapContainer.removeChild(lastClonedPin);
-        
-        // Remove the pin data from pinPositions
-        pinPositions = pinPositions.filter(p => p.pinId !== lastClonedPin.id);
-        savePinPositions();
-
-        // Reset the lastClonedPin reference
         lastClonedPin = null;
     }
 }

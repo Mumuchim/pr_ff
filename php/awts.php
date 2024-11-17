@@ -2,17 +2,18 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-if (isset($_POST['title']) && isset($_POST['details']) && isset($_POST['type']) && isset($_POST['date'])) {
+if (isset($_POST['user']) && isset($_POST['title']) && isset($_POST['details']) && isset($_POST['type']) && isset($_POST['date'])) {
     include "../db_conn.php";
 
     // Form data
+    $user = $_POST['user']; // Added user
     $title = $_POST['title'];
     $details = $_POST['details'];
     $type = $_POST['type'];
     $date = $_POST['date'];
 
     // Form validation
-    if (empty($title) || empty($details) || empty($type) || empty($date)) {
+    if (empty($user) || empty($title) || empty($details) || empty($type) || empty($date)) {
         echo json_encode(['error' => 'All fields are required']);
         exit;
     }
@@ -46,10 +47,10 @@ if (isset($_POST['title']) && isset($_POST['details']) && isset($_POST['type']) 
         }
 
         // Insert into the `report` table
-        $sql = "INSERT INTO report (title, details, type, image, date) 
-                VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO report (user, title, details, type, image, date) 
+                VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$title, $details, $type, $new_img_name, $date]);
+        $stmt->execute([$user, $title, $details, $type, $new_img_name, $date]);
         echo json_encode(['success' => 'Report submitted successfully']);
     } catch (Exception $e) {
         echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);

@@ -1,3 +1,10 @@
+<?php
+session_start();
+
+// Assuming that the username or full name is stored in the session after login
+// Example: $_SESSION['username'] or $_SESSION['fname'] 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,14 +16,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" href="css/report.css">
+    <link rel="stylesheet" href="css/bu.css">
 </head>
 
 <body id="body">
-
-    <!-- <div id="name">
-        <p id="namep"><?php echo htmlspecialchars($user_id); ?></p> 
-    </div> -->
 
     <div id="slidingColumn">
         <button id="closeButton">Close</button>
@@ -258,69 +261,90 @@
     </div>
 
     <body class="report_details">
-    <!-- <div class="d-flex justify-content-center align-items-center vh-100"> -->
-    <button class="open-button" onclick="openForm()">new report</button>
+    <button class="open-button" onclick="openForm()">New Report</button>
     <div class="form-popup" id="myForm">
-    	
-   <form id="reportForm" class="form-container" action="php/awts.php" method="post" enctype="multipart/form-data">
+        <form id="reportForm" class="form-container" action="php/huhu.php" method="post" enctype="multipart/form-data">
             <div class="report">
-    		<h1 class="display-4  fs-1">Report</h1><br>
-            <label><p>Report here your concern.<p></label>
-    		<?php if(isset($_GET['error'])){ ?>
-    		<div class="alert alert-danger" role="alert">
-			  <?php echo $_GET['error']; ?>
-			</div>
-		    <?php } ?>
+                <h1 class="display-4 fs-1">Report</h1><br>
+                
+                <?php if (isset($_GET['error'])) { ?>
+                <div class="alert alert-danger" role="alert">
+                    <?php echo $_GET['error']; ?>
+                </div>
+                <?php } ?>
 
-		    <?php if(isset($_GET['success'])){ ?>
-    		<div class="alert alert-success" role="alert">
-			  <?php echo $_GET['success']; ?>
-			</div>
-		    <?php } ?>
+                <?php if (isset($_GET['success'])) { ?>
+                <div class="alert alert-success" role="alert">
+                    <?php echo $_GET['success']; ?>
+                </div>
+                <?php } ?>
 
+                
 
-		  <div class="report-title">
-		    <label class="form-label">Title</label>
-		    <input type="text" class="form-control" name="title"
-		           value="<?php echo (isset($_GET['title']))?$_GET['title']:"" ?>">
-		  </div>
-
-		  <!-- <div class="mb-3"> -->
-    <!-- <label class="form-label">Details</label> -->
-    <textarea rows="10" class="form-control" cols="40" name="details" placeholder="Write your details here..">
-        <?php echo isset($_GET['details']) ? $_GET['details'] : ""; ?>
-    </textarea>
-<!-- </div> -->
-
-
-		  <div class="report-type">
-		    <label class="form-label">Type of Report</label>
-		    <select id="reportType" name="type" class="form-control">
-                            <option value="">Select Report Type</option>
-                            <option value="caution">Caution</option>
-                            <option value="cleaning">Cleaning</option>
-                            <option value="electrical-hazard">Electrical Hazard</option>
-                            <option value="it-maintenance">IT Maintenance</option>
-                            <option value="repair">Repair</option>
-                            <option value="request">Request</option>
-                        </select>
-		  </div>
-
-		  <div class="mb-3">
-		    <label class="form-label">Upload a file:</label>
-		    <input type="file" 
+                <div class="mb-3">
+		    <label class="form-label">Name:</label>
+		    <input type="text" 
 		           class="form-control"
-		           name="image">
+		           name="user"
+		           value="<?php 
+                                // Pre-fill with session data or allow user input
+                                if (isset($_SESSION['fname']) && isset($_SESSION['lname'])) {
+                                    echo htmlspecialchars($_SESSION['fname'] . ' ' . $_SESSION['lname']);
+                                } elseif (isset($_SESSION['fname'])) {
+                                    echo htmlspecialchars($_SESSION['fname']);
+                                } else {
+                                    echo '';
+                                }
+                           ?>">
 		  </div>
-		  <div class="date-picker-section">
-                        <label for="reportDate" class="date-label">Report Date:</label>
-                        <input type="date"  name="date" class="date-picker">
-                    </div>
-		  <button type="submit" class="btn btn-primary" id="submitButton" >Submit</button>
-          <button type="button" class="btn cancel" id="cancelRequestButton">Cancel Request</button>
 
-		</form>
+                <div class="report-title">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" name="title"
+                           value="<?php echo (isset($_GET['title'])) ? $_GET['title'] : ''; ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Details</label>
+                    <textarea rows="50" class="form-control" cols="10" name="details" placeholder="Write your details here..">
+                        <?php echo isset($_GET['details']) ? $_GET['details'] : ''; ?>
+                    </textarea>
+                </div>
+
+                <div class="report-type">
+                    <label class="form-label">Type of Report</label>
+                    <select id="reportType" name="type" class="form-control">
+                        <option value="">Select Report Type</option>
+                        <option value="caution">Caution</option>
+                        <option value="cleaning">Cleaning</option>
+                        <option value="electrical-hazard">Electrical Hazard</option>
+                        <option value="it-maintenance">IT Maintenance</option>
+                        <option value="repair">Repair</option>
+                        <option value="request">Request</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload a file:</label>
+                    <input type="file" class="form-control" name="image">
+                </div>
+
+                <div class="date-picker-section">
+                    <label for="reportDate" class="date-label">Report Date:</label>
+                    <input type="date" name="date" class="date-picker">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitButton">Submit</button>
+                <button type="button" class="btn cancel" id="cancelRequestButton">Cancel Request</button>
+            </div>
+        </form>
     </div>
+</body>
+
+</body>
+
+</body>
+
     <script src="js/loadSidebar.js"></script>
     <script src="js/app.js"></script>
     <script src="js/submit.js"></script>

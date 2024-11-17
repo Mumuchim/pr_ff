@@ -1,19 +1,25 @@
 <?php 
 
 if (isset($_POST['fname']) && 
+    isset($_POST['lname']) && 
     isset($_POST['email']) &&  
     isset($_POST['pass'])) {
 
     include "../db_conn.php";
 
     $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
     $email = $_POST['email'];
     $pass = $_POST['pass'];
 
-    $data = "fname=" . $fname . "&email=" . $email;
+    $data = "fname=" . $fname . "&lname=" . $lname . "&email=" . $email;
     
     if (empty($fname)) {
-        $em = "Full name is required";
+        $em = "First name is required";
+        header("Location: ../index.php?error=$em&$data");
+        exit;
+    } else if (empty($lname)) {
+        $em = "Last name is required";
         header("Location: ../index.php?error=$em&$data");
         exit;
     } else if (empty($email)) {
@@ -29,9 +35,9 @@ if (isset($_POST['fname']) &&
         $pass = password_hash($pass, PASSWORD_DEFAULT);
 
         // Insert into Database
-        $sql = "INSERT INTO users (fname, email, password) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$fname, $email, $pass]);
+        $stmt->execute([$fname, $lname, $email, $pass]);
 
         header("Location: ../index.php?success=Your account has been created successfully");
         exit;

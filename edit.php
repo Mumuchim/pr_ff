@@ -43,11 +43,19 @@ if (isset($_SESSION['id']) && isset($_SESSION['fname'])) {
             <?php } ?>
             
             <div class="mb-3">
-                <label class="form-label">Full Name</label>
+                <label class="form-label">First Name</label>
                 <input type="text" 
                        class="form-control"
                        name="fname"
                        value="<?php echo $user['fname'] ?>">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                <input type="text" 
+                       class="form-control"
+                       name="lname"
+                       value="<?php echo $user['lname'] ?>">
             </div>
 
             <div class="mb-3">
@@ -71,7 +79,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['fname'])) {
             </div>
 
             <button type="submit" class="btn btn-primary">Update</button>
-            <a href="map.php" class="link-secondary">Home</a>
+            <a href="d2ka.php" class="link-secondary">Home</a>
         </form>
     </div>
 
