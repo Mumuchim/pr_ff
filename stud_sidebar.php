@@ -33,7 +33,7 @@ session_start();
                 ?>
             </header>
             <ul>
-                <li><a href="map.php"><i class="fa fa-qrcode"></i>Dashboard</a></li>
+                <li><a href="map.php"><i class="fa fa-qrcode"></i> Student Dashboard</a></li>
                 <!-- <li><a href="stud_history"><i class="fas fa-book"></i>Student Reports</a></li> -->
                 <li><a href="stud_history.php"><i class="fas fa-history"></i>History</a></li>
                 <li><a href="edit.php"><i class="fas fa-edit"></i>Edit Profile</a></li>

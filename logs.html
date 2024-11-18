@@ -31,6 +31,14 @@
             border: none;
             cursor: pointer;
         }
+        #saveToDB {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -50,6 +58,8 @@
             <!-- Rows will be populated by JavaScript -->
         </tbody>
     </table>
+
+    <button id="saveToDB">Save to Database</button>
 
     <script>
         // Function to render localStorage contents into the table
@@ -83,6 +93,38 @@
                 actionCell.appendChild(deleteButton);
             }
         }
+
+        // Function to send localStorage data to the server
+        function saveToDatabase() {
+            const storageData = [];
+
+            // Collect all key-value pairs from localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                storageData.push({ key, value });
+            }
+
+            // Send the data to the server via an AJAX request
+            fetch('save_to_db.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(storageData),
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert('Data saved successfully!');
+                console.log(data); // For debugging
+            })
+            .catch(error => {
+                console.error('Error saving data:', error);
+            });
+        }
+
+        // Attach event listener to the Save to Database button
+        document.getElementById('saveToDB').addEventListener('click', saveToDatabase);
 
         // Initial rendering of localStorage contents when the page loads
         window.onload = function () {

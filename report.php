@@ -11,7 +11,7 @@
     <div class="d-flex justify-content-center align-items-center vh-100">
     	
     	<form class="shadow w-450 p-3" 
-    	      action="php/awts.php" 
+    	      action="php/rep.php" 
     	      method="post"
     	      enctype="multipart/form-data">
 

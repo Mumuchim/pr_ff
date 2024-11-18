@@ -1,64 +1,53 @@
 <?php
-session_start();
-
-// Enable detailed error reporting for debugging
-error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    include "db_conn.php"; // Ensure this file contains the correct database connection
-
-    // Collect form data
-    $title = $_POST['title'] ?? '';
-    $details = $_POST['details'] ?? '';
-    $type = $_POST['type'] ?? '';
-    $date = $_POST['date'] ?? '';
-    $name = $_POST['name'] ?? '';
-
-    // Log input data for debugging
-    file_put_contents('debug.log', "Form Data:\nTitle: $title\nDetails: $details\nType: $type\nDate: $date\nName: $name\n", FILE_APPEND);
-
-    // Handle file upload
-    if (isset($_FILES['image']['name']) && !empty($_FILES['image']['name'])) {
-        $img_name = $_FILES['image']['name'];
-        $tmp_name = $_FILES['image']['tmp_name'];
-        $error = $_FILES['image']['error'];
-
-        if ($error === 0) {
-            $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
-            $img_ex_to_lc = strtolower($img_ex);
-
-            $allowed_exs = array('jpg', 'jpeg', 'png');
-            if (in_array($img_ex_to_lc, $allowed_exs)) {
-                $new_img_name = uniqid("IMG-", true) . '.' . $img_ex_to_lc;
-                $img_upload_path = '../upload/' . $new_img_name;
-                move_uploaded_file($tmp_name, $img_upload_path);
-            } else {
-                die("Invalid file type.");
-            }
-        } else {
-            die("Error uploading file.");
-        }
+error_reporting(E_ALL);
+if (isset($_POST['user']) && isset($_POST['title']) && isset($_POST['details']) && isset($_POST['type']) && isset($_POST['date'])) {
+    include "../db_conn.php";
+    // Form data
+    $user = $_POST['user']; // Added user
+    $title = $_POST['title'];
+    $details = $_POST['details'];
+    $type = $_POST['type'];
+    $date = $_POST['date'];
+    // Form validation
+    if (empty($user) || empty($title) || empty($details) || empty($type) || empty($date)) {
+        echo json_encode(['error' => 'All fields are required']);
+        exit;
     }
-
     try {
-        // Insert data into database
-        $sql = "INSERT INTO report (title, details, type, image, date, name) 
+        // Handle image upload if provided
+        $new_img_name = 'default-pp.png'; // Default image
+        if (isset($_FILES['image']['name']) && !empty($_FILES['image']['name'])) {
+            $img_name = $_FILES['image']['name'];
+            $tmp_name = $_FILES['image']['tmp_name'];
+            $error = $_FILES['image']['error'];
+            if ($error === 0) {
+                $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+                $img_ex_to_lc = strtolower($img_ex);
+                $allowed_exs = array('jpg', 'jpeg', 'png');
+                if (in_array($img_ex_to_lc, $allowed_exs)) {
+                    $new_img_name = uniqid("IMG-", true) . '.' . $img_ex_to_lc;
+                    $img_upload_path = '../upload/' . $new_img_name;
+                    move_uploaded_file($tmp_name, $img_upload_path);
+                } else {
+                    echo json_encode(['error' => "You can't upload files of this type"]);
+                    exit;
+                }
+            } else {
+                echo json_encode(['error' => "Unknown error occurred during file upload!"]);
+                exit;
+            }
+        }
+        // Insert into the `report` table
+        $sql = "INSERT INTO report (user, title, details, type, image, date) 
                 VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$title, $details, $type, $new_img_name, $date, $name]);
-
-        // Log success
-        file_put_contents('debug.log', "Database insert successful.\n", FILE_APPEND);
-
-        // Redirect with success message
-        header("Location: ../index.php?success=Report submitted successfully");
-    } catch (PDOException $e) {
-        // Log error
-        file_put_contents('debug.log', "Database error: " . $e->getMessage() . "\n", FILE_APPEND);
-        die("Database error: " . $e->getMessage());
+        $stmt->execute([$user, $title, $details, $type, $new_img_name, $date]);
+        echo json_encode(['success' => 'Report submitted successfully']);
+    } catch (Exception $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
     }
 } else {
-    die("Invalid request.");
+    echo json_encode(['error' => 'Missing required fields']);
 }
 ?>

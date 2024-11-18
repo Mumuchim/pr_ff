@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
 
         // Send the FormData via fetch
-        fetch('php/awts.php', {
+        fetch('php/rep.php', {
             method: 'POST',
             body: formData
         })
