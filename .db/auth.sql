@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2024 at 06:33 AM
+-- Generation Time: Nov 18, 2024 at 01:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `auth`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `local_storage`
+--
+
+CREATE TABLE `local_storage` (
+  `id` int(11) NOT NULL,
+  `storage_key` varchar(255) NOT NULL,
+  `storage_value` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `local_storage`
+--
+
+INSERT INTO `local_storage` (`id`, `storage_key`, `storage_value`) VALUES
+(1, 'pinPositions', '[{\"pinId\":\"pin-1731904986149\",\"top\":\"264px\",\"left\":\"785px\",\"imgSrc\":null}]'),
+(2, 'pinPositions', '[{\"pinId\":\"pin-1731904986149\",\"top\":\"264px\",\"left\":\"785px\",\"imgSrc\":\"http://localhost:3000/null\"},{\"pinId\":\"pin-1731931944278\",\"top\":\"168px\",\"left\":\"451px\",\"imgSrc\":\"http://localhost:3000/null\"},{\"pinId\":\"pin-1731932061102\",\"top\":\"224px\",\"left\":\"1087px\",\"imgSrc\":null}]');
 
 -- --------------------------------------------------------
 
@@ -57,19 +77,7 @@ CREATE TABLE `report` (
 --
 
 -- INSERT INTO `report` (`id`, `user`, `title`, `details`, `type`, `image`, `date`) VALUES
--- (55, '', 'dasdasd', '            asdasdasd', 'electrical-hazard', 'IMG-6738936faa82e8.18154084.jpg', '2024-11-28'),
--- (56, 'John Doe', 'Test Title', 'Test Details', 'caution', 'default-pp.png', '2024-11-16'),
--- (57, '', 'dasdasda', '                                            dadsadsads', 'request', 'IMG-6738c3c42cf3c1.82211065.jpg', '2024-11-17'),
--- (58, '', 'dadasd', '                                            dasdadasd', 'electrical-hazard', 'IMG-6738c66532d4f8.76706876.jpg', '2024-11-17'),
--- (59, '', 'dasdasd', 'asdasdasd', 'cleaning', 'IMG-6738cb0922da26.55293011.jpg', '2024-11-17'),
--- (60, '', 'asdasdasd', '                                            dasdasdas', 'electrical-hazard', 'IMG-6738cd9a5fd647.00252197.jpg', '2024-11-17'),
--- (61, '', 'testing ', 'asdasdasd', 'cleaning', 'IMG-67397703b932f8.20485228.jpg', '2024-11-17'),
--- (62, '', 'asdasd', 'asdasdd', 'cleaning', 'IMG-67397936676404.33885644.jpg', '2024-11-17'),
--- (63, 'diet pepsi', 'asdasd', '            dasdadsad', 'cleaning', 'IMG-67397a7fc2f2b1.74028559.jpg', '2024-11-17'),
--- (64, 'pau', 'walang sabon', 'wala po sabon sa cr            ', 'request', 'IMG-67397b3a06eb57.36368576.jpg', '2024-11-17'),
--- (65, 'newjeans', 'asdasdas', 'dsadasd', 'electrical-hazard', 'IMG-67397da756ac78.33468691.jpg', '2024-11-17'),
--- (66, 'test ', 'supernatural', 'shajdks', 'cleaning', 'IMG-67397deae9a281.17548100.jpg', '2024-11-17'),
--- (67, 'Pauline Carag', 'sis', 'dasdasd', 'it-maintenance', 'IMG-67397e32e15333.02049759.jpg', '2024-11-17');
+-- (80, 'Pauline Carag', 'dsaadsasd', '            dsadasdasd', 'cleaning', 'default-pp.png', '2024-11-18');
 
 -- --------------------------------------------------------
 
@@ -82,23 +90,32 @@ CREATE TABLE `users` (
   `fname` varchar(255) NOT NULL,
   `lname` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `role` enum('student','admin') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
--- INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `password`) VALUES
--- (1, 'hi', '', 'hello', '$2y$10$sHpcSZd5RPW3oud6euulMueObXCFBKmmFQ54c1n/womZg4kYfkyYe'),
--- (2, 'jhewen shene', '', 'wenji', '$2y$10$YtjMm6iCU7IT6CKxLLgdDOTlwnS3xROoVXFPzIpyVh3A4Tjh6ufcK'),
--- (3, 'test', '', 'test@gmail.com', '$2y$10$CzmnG/oegkuqR6jL8tSQ/O5Ynyct8ZV70DeE1uCTnPhMqffQMtZ9G'),
--- (5, 'Jhewen Doldol', '', 'js@gmail.com', '$2y$10$ROdLRSHNfXdoNzaWePLlTOHeyzN5v8lLkep566TWhknw9cJowAbVu'),
--- (6, 'Pauline', 'Carag', 'pc@gmail.com', '$2y$10$qWmF5t1xKj6QJ16KEFnTJ.fe.qMC3qHJQ8ztIKC3ubCmxK6HbtHUK');
+-- INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `password`, `role`) VALUES
+-- (1, 'hi', '', 'hello', '$2y$10$sHpcSZd5RPW3oud6euulMueObXCFBKmmFQ54c1n/womZg4kYfkyYe', 'student'),
+-- (2, 'jhewen shene', '', 'wenji', '$2y$10$YtjMm6iCU7IT6CKxLLgdDOTlwnS3xROoVXFPzIpyVh3A4Tjh6ufcK', 'student'),
+-- (3, 'test', '', 'test@gmail.com', '$2y$10$CzmnG/oegkuqR6jL8tSQ/O5Ynyct8ZV70DeE1uCTnPhMqffQMtZ9G', 'student'),
+-- (5, 'Jhewen Doldol', '', 'js@gmail.com', '$2y$10$ROdLRSHNfXdoNzaWePLlTOHeyzN5v8lLkep566TWhknw9cJowAbVu', 'student'),
+-- (6, 'Pauline', 'Carag', 'pc@gmail.com', '$2y$10$qWmF5t1xKj6QJ16KEFnTJ.fe.qMC3qHJQ8ztIKC3ubCmxK6HbtHUK', 'student'),
+-- (7, 'Joan', 'Trocio', 'jt@gmail.com', '$2y$10$m7e69JW.sITuYTzy4CvE8eecF26K0Haz4z7jZN5E.9BtJl0qU9Znq', 'student'),
+-- (8, 'Jhewen', 'Doldol', 'jd@gmail.com', '$2y$10$qKMnE7eNL.8Fe0cpfExv6.QYnXDTJx29534OeH4i/WyHKvKRz9Tqq', 'admin');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `local_storage`
+--
+ALTER TABLE `local_storage`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `pins`
@@ -124,6 +141,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `local_storage`
+--
+ALTER TABLE `local_storage`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `pins`
 --
 ALTER TABLE `pins`
@@ -133,13 +156,13 @@ ALTER TABLE `pins`
 -- AUTO_INCREMENT for table `report`
 --
 ALTER TABLE `report`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
