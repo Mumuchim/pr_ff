@@ -111,40 +111,50 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function onMouseUp() {
-            isDragging = false;
+      function onMouseUp() {
+    isDragging = false;
 
-            const confirmPosition = confirm('Do you want to confirm the pin\'s position?');
-            if (confirmPosition) {
-                pin.style.position = 'absolute';
-                const pinId = pin.id;
-                pinPositions = pinPositions.filter(p => p.pinId !== pinId);
-                pinPositions.push({
-                    pinId: pinId,
-                    top: pin.style.top,
-                    left: pin.style.left
-                });
-                savePinPositions();
+    const confirmPosition = confirm('Do you want to confirm the pin\'s position?');
+    if (confirmPosition) {
+        pin.style.position = 'absolute';
+        const pinId = pin.id;
+        pinPositions = pinPositions.filter(p => p.pinId !== pinId);
+        pinPositions.push({
+            pinId: pinId,
+            top: pin.style.top,
+            left: pin.style.left
+        });
+        savePinPositions();
 
-                pin.removeEventListener('mousedown', onMouseDown);
-                pin.removeEventListener('mousemove', onMouseMove);
-                pin.removeEventListener('mouseup', onMouseUp);
+        pin.removeEventListener('mousedown', onMouseDown);
+        pin.removeEventListener('mousemove', onMouseMove);
+        pin.removeEventListener('mouseup', onMouseUp);
 
-                pin.addEventListener('click', () => {
-                    if (!pinPlacedManually) {
-                        showPinOptions(pin, pinId);
-                    }
-                });
-
-                openForm();
-                pinPlacedManually = true;
-            } else {
-                makeDraggable(pin);
+        pin.addEventListener('click', () => {
+            if (!pinPlacedManually) {
+                showPinOptions(pin, pinId);
             }
+        });
 
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
+        openForm();
+        pinPlacedManually = true;
+    } else {
+        // Reset the pin operation by removing the pin
+        const mapContainer = document.getElementById("mapContainer");
+        if (pin.parentNode === mapContainer) {
+            mapContainer.removeChild(pin);
         }
+
+        // If it's a cloned pin, reset `lastClonedPin`
+        if (lastClonedPin === pin) {
+            lastClonedPin = null;
+        }
+    }
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+}
+
 
         function onMouseDown(e) {
             isDragging = true;
